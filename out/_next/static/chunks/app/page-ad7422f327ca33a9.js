@@ -1,0 +1,1 @@
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[974],{5921:(e,n,l)=>{Promise.resolve().then(l.bind(l,7322))},7322:(e,n,l)=>{"use strict";l.r(n),l.d(n,{default:()=>r});var o=l(2115);function r(){return(0,o.useEffect)(()=>{window.location.replace("/portal/"+window.location.search)},[]),null}}},e=>{e.O(0,[441,255,358],()=>e(e.s=5921)),_N_E=e.O()}]);
