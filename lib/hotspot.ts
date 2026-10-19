@@ -44,7 +44,8 @@ export function qs(h: Hotspot): string {
 
 /** Login de trial (40 min) que hace el navegador del cliente contra el MikroTik. */
 export function urlTrial(h: Hotspot, dst: string): string {
-  const usuario = "T-" + (h.macesc ? encodeURIComponent(h.macesc) : encodeURIComponent(h.mac));
+  // $(mac-esc) ya viene escapado por el MikroTik (AA%3ABB…): escaparlo otra vez daría T-AA%3ABB y el trial falla.
+  const usuario = "T-" + (h.macesc || encodeURIComponent(h.mac));
   return `${h.lo}?username=${usuario}&dst=${encodeURIComponent(dst)}`;
 }
 
