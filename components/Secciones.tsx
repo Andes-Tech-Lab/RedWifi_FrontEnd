@@ -1,20 +1,33 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { media } from "@/lib/api";
-import type { Clima, Landing, Producto } from "@/lib/tipos";
+import { useIdioma } from "@/lib/idioma";
+import { registrar } from "@/lib/metricas";
+import { FranjaAndina, Icono, Pilares } from "./Marca";
+import type { Landing, Producto } from "@/lib/tipos";
 import Flyers from "./Flyers";
 
 const soles = (n: number) => `S/ ${n.toFixed(2)}`;
-const TEMP: Record<string, string> = { caliente: "🔥 Caliente", fria: "🧊 Frío", ambas: "" };
 
 export function ProductoCard({ p }: { p: Producto }) {
+  const { t } = useIdioma();
   const foto = media(p.foto);
+  const temp = p.temperatura === "caliente" ? t.caliente : p.temperatura === "fria" ? t.fria : "";
   return (
-    <article className="prod">
+    <article className={`prod ${p.disponible ? "" : "agotado"}`}>
       <div className="prod-img">
-        {foto ? <img src={foto} alt={p.nombre} loading="lazy" decoding="async" /> : <span aria-hidden="true">{p.emoji || "☕"}</span>}
-        {p.propio && <span className="badge">Propio</span>}
-        {TEMP[p.temperatura] && <span className="badge t">{TEMP[p.temperatura]}</span>}
+        {/* Sin foto: un marcador neutro con la inicial, nunca un emoji haciéndose pasar por el producto. */}
+        {foto ? <img src={foto} alt={p.nombre} loading="lazy" decoding="async" /> : <span className="sin-foto" aria-hidden="true">{p.nombre.charAt(0)}</span>}
+        {p.propio && <span className="badge">{t.propio}</span>}
+        {p.disponible ? (
+          temp && (
+            <span className="badge t">
+              <Icono n={p.temperatura === "caliente" ? "llama" : "copo"} /> {temp}
+            </span>
+          )
+        ) : (
+          <span className="badge t">{t.agotado}</span>
+        )}
       </div>
       <div className="prod-cuerpo">
         <h4>{p.nombre}</h4>
@@ -25,33 +38,17 @@ export function ProductoCard({ p }: { p: Producto }) {
   );
 }
 
-/** Botón bajo la tarjeta de conexión: temperatura actual y salto a la promo. */
-export function BotonPromo({ clima }: { clima: Clima | null }) {
-  return (
-    <a href="#promo" className={`ver-promo ${clima?.modo ?? ""}`}>
-      {clima ? (
-        <>
-          <span>{clima.icono}</span>
-          <span className="temp">{clima.temp} °C</span>
-          <span>
-            · <b>Ver la promo del día</b> ↓
-          </span>
-        </>
-      ) : (
-        <span>
-          ✨ <b>Ver la promo del día</b> ↓
-        </span>
-      )}
-    </a>
-  );
-}
-
 export function PromoDia({ datos }: { datos: Landing }) {
+  const { t } = useIdioma();
   const { promo, clima } = datos;
   if (!promo.productos.length && promo.tipo !== "manual") return null;
+  // Las promos manuales se escriben en /admin (español); las automáticas se arman en el idioma elegido.
+  const auto = promo.tipo !== "manual" && promo.momento ? t.momentos[promo.momento] : null;
+  const titulo = auto ? auto.tit(clima?.temp) : promo.titulo;
+  const texto = auto ? auto.txt : promo.texto;
   return (
     <section id="promo" className="seccion">
-      <div className={`promo ${promo.tipo !== "manual" ? clima?.modo ?? "" : ""}`}>
+      <div className={`promo ${promo.tipo === "clima" ? clima?.modo ?? "" : ""}`}>
         <div className="promo-cab">
           {clima && (
             <div className="promo-temp">
@@ -62,13 +59,16 @@ export function PromoDia({ datos }: { datos: Landing }) {
             </div>
           )}
           <div>
-            <span className="etiqueta">Promo del día{clima ? ` · ${clima.descripcion}` : ""}</span>
-            <h3>{promo.titulo}</h3>
-            {promo.texto && <p>{promo.texto}</p>}
+            <span className="etiqueta">
+              {t.promoDia}
+              {clima ? ` · ${clima.descripcion}` : ""}
+            </span>
+            <h3>{titulo}</h3>
+            {texto && <p>{texto}</p>}
           </div>
         </div>
         {promo.productos.length > 0 && (
-          <div className="fila">
+          <div className="grilla">
             {promo.productos.map((p) => (
               <ProductoCard key={p.id} p={p} />
             ))}
@@ -82,7 +82,7 @@ export function PromoDia({ datos }: { datos: Landing }) {
 export function Propio({ datos }: { datos: Landing }) {
   const { propio } = datos;
   return (
-    <section className="seccion">
+    <section id="propio" className="seccion">
       <h2>{propio.titulo}</h2>
       <p className="intro">{propio.intro}</p>
       <div className="propio">
@@ -97,7 +97,7 @@ export function Propio({ datos }: { datos: Landing }) {
         ))}
       </div>
       {propio.productos.length > 0 && (
-        <div className="fila">
+        <div className="grilla">
           {propio.productos.map((p) => (
             <ProductoCard key={p.id} p={p} />
           ))}
@@ -108,17 +108,31 @@ export function Propio({ datos }: { datos: Landing }) {
 }
 
 export function Carta({ datos }: { datos: Landing }) {
+  const { t } = useIdioma();
+  const ref = useRef<HTMLElement>(null);
+
+  // Visita a la carta = la sección llegó a verse (una vez por página).
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !("IntersectionObserver" in window)) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        registrar("menu_visita");
+        obs.disconnect();
+      }
+    }, { threshold: 0.15 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
   const [sel, setSel] = useState<number | "todo">("todo");
   const cats = sel === "todo" ? datos.carta : datos.carta.filter((c) => c.id === sel);
   return (
-    <section id="carta" className="seccion">
-      <h2>Nuestra carta</h2>
-      <p className="intro">
-        Los productos con <b>Propio</b> están hechos con nuestro café y chocolate.
-      </p>
+    <section id="carta" ref={ref} className="seccion">
+      <h2>{t.carta}</h2>
+      <p className="intro">{t.cartaIntro}</p>
       <div className="tabs" role="tablist">
         <button className={`tab ${sel === "todo" ? "on" : ""}`} onClick={() => setSel("todo")}>
-          Todo
+          {t.todo}
         </button>
         {datos.carta.map((c) => (
           <button key={c.id} className={`tab ${sel === c.id ? "on" : ""}`} onClick={() => setSel(c.id)}>
@@ -145,21 +159,22 @@ export function Carta({ datos }: { datos: Landing }) {
 }
 
 export function Nosotros({ datos }: { datos: Landing }) {
+  const { t } = useIdioma();
   const n = datos.nosotros;
   return (
     <section id="nosotros" className="seccion">
-      <h2>Nosotros</h2>
+      <h2>{t.nosotros}</h2>
       <div className="nosotros">
         <div className="bloque">
-          <h3>Nuestra historia</h3>
+          <h3>{t.historia}</h3>
           <p>{n.nosotros_historia}</p>
         </div>
         <div className="bloque">
-          <h3>Nuestro objetivo</h3>
+          <h3>{t.objetivo}</h3>
           <p>{n.nosotros_objetivo}</p>
         </div>
         <div className="bloque">
-          <h3>Visítanos</h3>
+          <h3>{t.visitanos}</h3>
           <p>
             📍 {n.direccion}
             <br />
@@ -172,15 +187,17 @@ export function Nosotros({ datos }: { datos: Landing }) {
 }
 
 export function Pie({ datos }: { datos: Landing }) {
+  const { t } = useIdioma();
   const e = datos.enlaces;
   const redes = [
-    { url: e.wa_canal, txt: "📣 Canal de WhatsApp" },
+    { url: e.wa_canal, txt: t.canalWa },
     { url: e.instagram, txt: "Instagram" },
     { url: e.facebook, txt: "Facebook" },
     { url: e.tiktok, txt: "TikTok" },
   ].filter((r) => r.url);
   return (
     <footer className="pie">
+      <Pilares />
       {redes.length > 0 && (
         <div className="redes">
           {redes.map((r) => (
@@ -191,8 +208,9 @@ export function Pie({ datos }: { datos: Landing }) {
         </div>
       )}
       <p>
-        {datos.negocio.nombre} · {datos.negocio.eslogan} · <a href="/terminos/">Términos y privacidad</a>
+        {datos.negocio.nombre} · {datos.negocio.eslogan} · <a href="/terminos/">{t.terminosPie}</a>
       </p>
+      <FranjaAndina />
     </footer>
   );
 }

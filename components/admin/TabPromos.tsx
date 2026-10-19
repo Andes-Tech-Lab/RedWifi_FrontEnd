@@ -15,7 +15,7 @@ export default function TabPromos({ api }: { api: Api }) {
   const [landing, setLanding] = useState<Landing | null>(null);
   const [promos, setPromos] = useState<Promo[]>([]);
   const [prods, setProds] = useState<Producto[]>([]);
-  const [umbral, setUmbral] = useState({ umbral_frio: "", umbral_calor: "" });
+  const [umbral, setUmbral] = useState({ umbral_frio: "", umbral_calor: "", hora_almuerzo: "", hora_cafe: "", hora_noche: "" });
   const [nueva, setNueva] = useState({ fecha: hoy(), titulo: "", texto: "", producto_ids: [] as number[], activa: true });
   const [error, setError] = useState("");
   const [ok, setOk] = useState("");
@@ -30,7 +30,7 @@ export default function TabPromos({ api }: { api: Api }) {
     setLanding(l);
     setPromos(p);
     setProds(pr.filter((x) => x.activo));
-    setUmbral({ umbral_frio: aj.umbral_frio, umbral_calor: aj.umbral_calor });
+    setUmbral({ umbral_frio: aj.umbral_frio, umbral_calor: aj.umbral_calor, hora_almuerzo: aj.hora_almuerzo, hora_cafe: aj.hora_cafe, hora_noche: aj.hora_noche });
   }, [api]);
   useEffect(() => {
     cargar().catch((e) => setError(mensaje(e)));
@@ -78,8 +78,11 @@ export default function TabPromos({ api }: { api: Api }) {
       </div>
 
       <div className="panel-admin">
-        <h2>Regla del clima</h2>
-        <p className="ayuda">Frío: muestra bebidas marcadas como &quot;caliente&quot;. Calor: las marcadas como &quot;fría&quot;. En medio: los destacados.</p>
+        <h2>Reglas de la promo automática</h2>
+        <p className="ayuda">
+          Orden: 1) promo manual del día, 2) clima extremo (frío → bebidas &quot;caliente&quot;, calor → &quot;fría&quot;), 3) si el clima es
+          templado, la franja horaria. Lo agotado en el POS nunca se promociona.
+        </p>
         <div className="form-linea">
           <label className="lbl">Frío si es ≤ (°C)
             <input className="inp" type="number" value={umbral.umbral_frio} onChange={(e) => setUmbral({ ...umbral, umbral_frio: e.target.value })} />
@@ -87,7 +90,16 @@ export default function TabPromos({ api }: { api: Api }) {
           <label className="lbl">Calor si es ≥ (°C)
             <input className="inp" type="number" value={umbral.umbral_calor} onChange={(e) => setUmbral({ ...umbral, umbral_calor: e.target.value })} />
           </label>
-          <button className="btn btn-go btn-chico" onClick={() => accion(() => api("/ajustes", { method: "PUT", json: umbral }), "Umbrales guardados.")}>
+          <label className="lbl">Almuerzo desde (h)
+            <input className="inp" type="number" min={0} max={23} value={umbral.hora_almuerzo} onChange={(e) => setUmbral({ ...umbral, hora_almuerzo: e.target.value })} />
+          </label>
+          <label className="lbl">Hora del café desde (h)
+            <input className="inp" type="number" min={0} max={23} value={umbral.hora_cafe} onChange={(e) => setUmbral({ ...umbral, hora_cafe: e.target.value })} />
+          </label>
+          <label className="lbl">Noche desde (h)
+            <input className="inp" type="number" min={0} max={23} value={umbral.hora_noche} onChange={(e) => setUmbral({ ...umbral, hora_noche: e.target.value })} />
+          </label>
+          <button className="btn btn-go btn-chico" onClick={() => accion(() => api("/ajustes", { method: "PUT", json: umbral }), "Reglas guardadas.")}>
             Guardar
           </button>
         </div>

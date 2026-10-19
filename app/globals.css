@@ -222,3 +222,319 @@ select.inp option{background:#2a1810}
 .modal-caja{width:100%;max-width:560px;background:#2a1810;border:1px solid var(--borde);border-radius:20px;padding:20px}
 .modal-caja h2{color:var(--ambar2);font-size:18px;margin-bottom:6px}
 .barra-guardar{position:sticky;bottom:12px;display:flex;justify-content:flex-end;align-items:center;gap:12px}
+
+/* ---- selector de idioma y WhatsApp opcional (igual que chinkana/estilo.css del MikroTik) ---- */
+.barra-idioma{display:flex;justify-content:flex-end;margin-bottom:12px}
+.idioma{display:flex;padding:3px;border-radius:999px;background:rgba(27,15,10,.55);border:1px solid rgba(255,220,170,.25)}
+.idioma button{display:flex;align-items:center;gap:6px;border:0;background:none;color:var(--tenue);font-weight:600;font-size:12.5px;
+  line-height:1;padding:7px 10px;border-radius:999px;cursor:pointer;font-family:inherit}
+.idioma button.on{background:var(--ambar);color:var(--espresso)}
+.idioma svg{width:18px;height:12px;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.wifi-badge{display:inline-block;font-size:12.5px;font-weight:600;color:var(--ambar2);background:rgba(232,163,61,.14);
+  border:1px solid rgba(232,163,61,.3);border-radius:999px;padding:5px 12px;margin-bottom:10px}
+.wa-opt{border:1px solid var(--borde);border-radius:16px;background:rgba(0,0,0,.18);padding:12px 12px 2px;margin-bottom:14px;text-align:left;transition:border-color .2s}
+.wa-opt.on{border-color:rgba(37,211,102,.55)}
+.check.wa{margin:0 0 10px;align-items:center}
+.check.wa > span{display:block}
+.check.wa b{display:block;font-size:13.5px;color:var(--texto);font-weight:600}
+.check.wa small{display:block;font-size:11.5px;color:var(--tenue);margin-top:2px;line-height:1.4}
+.wa-ico{flex:none;width:30px;height:30px}
+.wa-campo{max-height:0;overflow:hidden;opacity:0;transition:max-height .35s ease,opacity .25s}
+.wa-opt.on .wa-campo{max-height:140px;opacity:1}
+.wa-campo .campo{margin-bottom:10px}
+.campo .pref{display:flex;align-items:center;gap:6px}
+.campo .pref svg{width:18px;height:12px;border-radius:2px}
+.wa-error{font-size:12px;color:var(--rojo);margin:-4px 0 10px;line-height:1.4}
+.facil{font-size:12px;color:var(--tenue);margin-top:10px}
+.legal{font-size:11.5px;color:var(--tenue);margin-top:6px}
+.legal a{color:var(--ambar2)}
+
+/* agotado según admintienda: se ve en la carta, no se promociona */
+.prod.agotado{opacity:.55}
+.prod.agotado .prod-img img{filter:grayscale(.7)}
+.aviso-pos{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.aviso-pos p{margin:0}
+.solo-lectura{background:rgba(0,0,0,.18);border:1px solid var(--borde);border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.solo-lectura b{color:var(--crema)}
+
+/* ================= portada con fotos (mismo diseño que chinkana/estilo.css del MikroTik) ================= */
+.portada{position:relative;z-index:1;overflow:hidden;min-height:100svh}
+.slides{position:absolute;inset:0;z-index:0;background:var(--espresso)}
+.conectado .slides{position:fixed}
+.slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transform:scale(1.12);
+  transition:opacity 1.4s ease,transform 7s ease-out}
+.slide.on{opacity:1;transform:scale(1)}
+.slides::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(27,15,10,.35) 0%,rgba(27,15,10,.15) 22%,rgba(27,15,10,.75) 48%,rgba(27,15,10,.96) 70%)}
+.conectado .slides::after{background:linear-gradient(180deg,rgba(27,15,10,.45) 0%,rgba(27,15,10,.88) 32%,rgba(27,15,10,.97) 60%)}
+
+.portada-layout{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr);gap:18px;max-width:1180px;margin:0 auto;padding:16px 16px 28px}
+.portada-promo{min-height:38svh;display:flex;flex-direction:column;justify-content:space-between;gap:20px;text-align:left}
+.portada-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.marca-top{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;letter-spacing:.4px;color:var(--crema);text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:21px;
+  background:linear-gradient(135deg,var(--ambar),#c9762a);box-shadow:0 6px 18px rgba(232,163,61,.35)}
+.portada .idioma{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+
+.titulares{animation:subir .7s cubic-bezier(.2,.9,.3,1) both}
+@keyframes subir{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.eyebrow{display:inline-block;padding:5px 12px;border-radius:999px;background:var(--ambar);color:var(--espresso);
+  font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.titular{font-size:clamp(30px,8vw,56px);line-height:1.04;font-weight:800;color:#fff;letter-spacing:-.5px;text-shadow:0 4px 24px rgba(0,0,0,.55)}
+.bajada{color:var(--texto);font-size:16px;margin-top:8px;max-width:440px;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.dots{display:flex;gap:7px}
+.dots button{width:8px;height:8px;border:0;border-radius:99px;background:rgba(255,255,255,.4);cursor:pointer;padding:0;transition:width .3s,background .3s}
+.dots button.on{width:26px;background:var(--ambar)}
+
+/* temperatura protagonista */
+.clima{display:inline-flex;align-items:center;gap:8px;padding:7px 16px 7px 10px;border-radius:999px;margin-bottom:14px;
+  background:rgba(27,15,10,.55);border:1px solid rgba(255,220,170,.28);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:0 8px 24px rgba(0,0,0,.35);animation:subir .6s cubic-bezier(.2,.9,.3,1) both}
+.clima-ico{font-size:30px;line-height:1;animation:flota 3s ease-in-out infinite}
+@keyframes flota{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.clima-temp{font-size:36px;font-weight:800;line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;
+  background:linear-gradient(180deg,var(--crema),var(--ambar));-webkit-background-clip:text;background-clip:text;color:transparent}
+.clima small{font-size:11px;line-height:1.3;color:var(--tenue)}
+.clima small span{color:var(--crema);font-weight:600;font-size:12px}
+[data-clima=calor] .clima{border-color:rgba(255,140,60,.55);box-shadow:0 8px 28px rgba(255,110,40,.35)}
+[data-clima=calor] .clima-temp{background-image:linear-gradient(180deg,#ffe08a,#ff6a2b)}
+[data-clima=calor] .eyebrow{background:linear-gradient(90deg,#ffb347,#ff6a2b)}
+[data-clima=frio] .clima{border-color:rgba(140,200,255,.5);box-shadow:0 8px 28px rgba(90,170,255,.3)}
+[data-clima=frio] .clima-temp{background-image:linear-gradient(180deg,#eaf6ff,#7cc0ff)}
+[data-clima=frio] .eyebrow{background:linear-gradient(90deg,#d6eeff,#8cc8ff)}
+
+/* tarjeta de conexión sobre las fotos */
+.portada .card{max-width:440px;justify-self:center;background:rgba(27,15,10,.74);border-color:rgba(255,220,170,.22)}
+.portada .card h1.marca{font-size:27px}
+.portada .btn-go:not([disabled]){animation:latido-cta 2.2s ease-in-out infinite}
+@keyframes latido-cta{0%,100%{box-shadow:0 10px 26px rgba(232,163,61,.25),0 0 0 0 rgba(232,163,61,.5)}
+  50%{box-shadow:0 10px 26px rgba(232,163,61,.35),0 0 0 9px rgba(232,163,61,0)}}
+
+/* carrusel de antojos (productos reales de la promo, con precio) */
+.antojos{min-width:0;text-align:left}
+.antojos-cab{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px}
+.antojos-cab h3{font-size:clamp(15px,4.4vw,18px);color:var(--crema)}
+.antojos-cab a{font-size:13px;white-space:nowrap}
+.antojos-pista{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:none}
+.antojos-pista::-webkit-scrollbar{display:none}
+.antojo{position:relative;flex:0 0 158px;aspect-ratio:9/12;border-radius:18px;overflow:hidden;scroll-snap-align:start;
+  background:linear-gradient(135deg,rgba(232,163,61,.3),rgba(107,62,38,.6));box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.antojo img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.antojo:hover img{transform:scale(1.07)}
+.antojo-emoji{position:absolute;inset:0 0 40%;display:grid;place-items:center;font-size:56px}
+.antojo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(20,10,5,.94))}
+.antojo em{position:absolute;left:10px;z-index:1;font-style:normal;font-size:10.5px;font-weight:800;padding:4px 9px;border-radius:999px}
+.antojo-tag{top:10px;background:rgba(255,245,230,.92);color:var(--espresso)}
+.antojo-ideal{top:10px;background:var(--ambar);color:var(--espresso)}
+.antojo-ideal + .antojo-tag{top:38px}
+[data-clima=calor] .antojo-ideal{background:linear-gradient(90deg,#ffb347,#ff6a2b)}
+.antojo.hoy{outline:2px solid var(--ambar);outline-offset:-2px}
+[data-clima=calor] .antojo.hoy{outline-color:#ff8a3d}
+.antojo div{position:absolute;left:12px;right:12px;bottom:11px;z-index:1}
+.antojo b{display:block;font-size:15px;color:#fff;line-height:1.2}
+.antojo small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;color:var(--tenue);margin-top:2px;line-height:1.3}
+.antojo-precio{display:inline-block;margin-top:6px;font-weight:800;font-size:14px;color:var(--espresso);background:var(--ambar2);padding:2px 9px;border-radius:999px}
+.antojos-sub{font-size:12.5px;color:var(--ambar2);margin-top:8px}
+
+@media (min-width:900px){
+  .slides::after{background:linear-gradient(90deg,rgba(27,15,10,.55) 0%,rgba(27,15,10,.25) 45%,rgba(27,15,10,.78) 72%,rgba(27,15,10,.92) 100%),
+    linear-gradient(180deg,transparent 55%,rgba(27,15,10,.9) 100%)}
+  .portada-layout{min-height:100svh;grid-template-columns:minmax(0,1fr) 420px;grid-template-rows:1fr auto;gap:28px 48px;padding:32px 40px}
+  .portada-promo{grid-column:1;grid-row:1;min-height:0;padding-bottom:10px}
+  .portada-layout > .card{grid-column:2;grid-row:1/3;align-self:center}
+  .antojos{grid-column:1;grid-row:2}
+  .antojo{flex-basis:172px}
+  .clima-temp{font-size:42px}
+}
+
+/* ================= «¡Conectado!» ================= */
+.pagina-listo{max-width:560px;padding-top:16px}
+.listo-card{margin:28px auto 18px;max-width:none}
+.listo-card .icono{width:76px;height:76px;font-size:36px;margin-bottom:10px}
+.promo-destacada{display:block;position:relative;overflow:hidden;border-radius:24px;padding:22px 20px 18px;min-height:230px;text-decoration:none;
+  background-size:cover;background-position:center right;border:1px solid var(--borde);box-shadow:0 20px 50px rgba(0,0,0,.45)}
+.promo-destacada::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(27,15,10,.94) 0%,rgba(27,15,10,.75) 48%,rgba(27,15,10,.1) 100%)}
+.promo-destacada > *{position:relative}
+.promo-destacada h2{font-size:28px;line-height:1.1;color:#fff;max-width:62%;margin-top:4px}
+.promo-destacada p{color:var(--texto);font-size:14px;max-width:58%;margin-top:6px}
+.promo-pie{display:flex;align-items:center;justify-content:space-between;margin-top:18px}
+.promo-precio{font-size:24px;font-weight:800;color:var(--espresso);background:var(--ambar2);padding:6px 16px;border-radius:999px}
+.promo-flecha{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(27,15,10,.7);color:var(--crema);font-size:20px;margin-left:auto}
+.accesos{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}
+.acceso{display:flex;align-items:center;gap:10px;padding:14px;border-radius:16px;background:rgba(27,15,10,.6);border:1px solid var(--borde);
+  color:var(--texto);text-decoration:none;font-weight:600;font-size:14px}
+.acceso span{font-size:22px}
+.wa-box{margin-top:14px;padding:18px;border-radius:22px;background:linear-gradient(135deg,rgba(37,211,102,.14),rgba(27,15,10,.7));border:1px solid rgba(37,211,102,.4)}
+.wa-box-cab{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.wa-box-cab .wa-ico{width:40px;height:40px}
+.wa-box-cab h3{font-size:17px;color:var(--crema)}
+.wa-box-cab p{font-size:13px;color:var(--tenue)}
+.wa-ok{color:#bff5d3;font-weight:600;font-size:14.5px;margin:4px 0 8px}
+.wa-box .legal{text-align:center}
+.descubre{margin-top:32px}
+.descubre h2{font-size:20px;color:var(--crema);text-align:center;margin-bottom:12px}
+.descubre-fila{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.descubre-fila a{position:relative;aspect-ratio:4/5;border-radius:16px;overflow:hidden;background-size:cover;background-position:center;
+  display:flex;align-items:flex-end;padding:10px;text-decoration:none;border:1px solid var(--borde)}
+.descubre-fila a::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(20,10,5,.92))}
+.descubre-fila b{position:relative;color:#fff;font-size:13.5px;line-height:1.2}
+.gracias{margin-top:40px;text-align:center;color:var(--ambar2);font-size:16px;font-weight:600}
+@media (prefers-reduced-motion:reduce){.slide{transition:opacity .4s}}
+
+/* ================= rediseño: identidad (serif), conversión en móvil, contenidos ================= */
+:root{--serif-f:var(--serif),Georgia,"Times New Roman",serif}
+.titular,.portada .card h1.marca,.promo-destacada h2,.oferta b,.explora > h2,.propuesta h2,.propuesta h3,.seccion > h2,.gracias,.descubre h2{font-family:var(--serif-f);letter-spacing:0}
+.titular{font-weight:600}
+.portada .card h1.marca{font-weight:600;animation:none;background:none;color:var(--ambar2);-webkit-text-fill-color:currentColor}
+
+/* wordmark (hasta tener el logo real) */
+.wordmark{display:flex;flex-direction:column;line-height:1;text-shadow:0 2px 14px rgba(0,0,0,.55)}
+.wordmark b{font-family:var(--serif-f);font-weight:600;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:var(--ambar2)}
+.wordmark small{font-size:10px;letter-spacing:2.4px;text-transform:uppercase;color:var(--crema);opacity:.85;margin-top:5px}
+
+/* móvil: el botón de conectar tiene que entrar en la primera pantalla */
+@media (max-width:899px){
+  .portada-promo{min-height:0;gap:14px}
+  .portada-promo .dots{display:none}
+  .titular{font-size:clamp(26px,7.4vw,36px)}
+  .bajada{font-size:14.5px}
+  .clima{margin-bottom:10px;padding:5px 14px 5px 8px}
+  .clima-ico{font-size:24px}
+  .clima-temp{font-size:30px}
+  .portada .card{padding:22px 18px 18px}
+  .portada .card .sub{margin:4px 0 14px}
+  .portada .chips{margin-bottom:14px}
+}
+
+/* WhatsApp opcional plegado: una línea hasta que se marca */
+.wa-opt{padding:10px 12px 0}
+.wa-opt:not(.on) .check.wa small{display:none}
+.check.wa b i{font-style:normal;font-weight:400;color:var(--tenue)}
+
+/* oferta destacada (un producto real con foto y precio) */
+.oferta{display:flex;gap:14px;align-items:center;padding:12px;border-radius:20px;text-decoration:none;
+  background:rgba(27,15,10,.72);border:1px solid rgba(232,163,61,.35);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:0 14px 34px rgba(0,0,0,.4);max-width:520px;width:100%}
+.oferta img{flex:none;width:96px;height:96px;border-radius:14px;object-fit:cover}
+.oferta > div{min-width:0;display:flex;flex-direction:column;gap:3px}
+.oferta-tag{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--ambar2);font-weight:700}
+.oferta b{font-size:20px;color:#fff;line-height:1.15}
+.oferta small{color:var(--tenue);font-size:13px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.oferta-pie{display:flex;align-items:center;gap:10px;margin-top:4px;font-size:12.5px;color:var(--tenue)}
+.oferta-precio{font-weight:800;font-size:15px;color:var(--espresso);background:var(--ambar2);padding:3px 11px;border-radius:999px}
+@media (min-width:900px){.portada-layout > .oferta{grid-column:1;grid-row:2}}
+
+/* carta: sin scroll horizontal ni emojis en lugar de fotos */
+.tabs{flex-wrap:wrap;overflow:visible}
+.sin-foto{font-family:var(--serif-f);font-size:44px;color:rgba(255,207,122,.55);font-weight:600}
+
+/* «¡Conectado!» */
+.acceso{justify-content:space-between}
+.acceso span{font-size:18px;color:var(--ambar2)}
+.promo-destacada.sin-foto{background:linear-gradient(135deg,rgba(232,163,61,.22),rgba(107,62,38,.5))}
+.promo-destacada.sin-foto h2,.promo-destacada.sin-foto p{max-width:none}
+
+.explora{margin-top:34px}
+.explora > h2{font-size:26px;color:var(--crema);margin-bottom:6px}
+.explora-seccion{margin-top:18px}
+.explora-cab h3{font-size:17px;color:var(--ambar2)}
+.explora-cab p{font-size:13px;color:var(--tenue);margin-bottom:10px}
+.explora-grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tarjeta-contenido{display:flex;flex-direction:column;border-radius:16px;overflow:hidden;background:rgba(27,15,10,.7);border:1px solid var(--borde);text-decoration:none;color:var(--texto)}
+.tarjeta-contenido img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.tarjeta-contenido > div{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px}
+.tarjeta-contenido b{font-size:14.5px;color:var(--crema);line-height:1.25}
+.tarjeta-contenido small{font-size:12.5px;color:var(--tenue);line-height:1.35}
+.explora-mas{font-size:12.5px;color:var(--ambar2);font-weight:600;margin-top:2px}
+
+.propuesta{margin-top:40px;padding:24px 20px;border-radius:24px;background:rgba(251,243,230,.94);color:#3a2418}
+.propuesta .eyebrow{background:var(--espresso);color:var(--ambar2)}
+.propuesta h2{font-size:26px;color:var(--espresso);line-height:1.15}
+.propuesta .intro{color:#5d4334;margin:6px 0 14px;font-size:14.5px}
+.propuesta ol{list-style:none;display:grid;gap:14px}
+.propuesta li{display:flex;gap:14px;padding-top:14px;border-top:1px solid rgba(58,36,24,.15)}
+.propuesta .num{flex:none;font-size:13px;color:#8a6a55;font-variant-numeric:tabular-nums;padding-top:3px}
+.propuesta h3{font-size:18px;color:var(--espresso);margin-bottom:3px}
+.propuesta li p{font-size:14px;color:#5d4334}
+
+/* ================= identidad de la fachada: logo, iconos de línea, clima, pilares, greca ================= */
+:root{--script-f:var(--script),"Segoe Script","Brush Script MT",cursive}
+.titular,.portada .card h1.marca,.promo-destacada h2,.oferta b,.explora > h2,.propuesta h2,.propuesta h3,.seccion > h2,.descubre h2{font-weight:400}
+.ico{width:1.15em;height:1.15em;flex:none;vertical-align:-.18em}
+.btn .ico{width:19px;height:19px}
+
+/* logo + wordmark */
+.wordmark{flex-direction:row;align-items:center;gap:10px}
+.wordmark > div{display:flex;flex-direction:column;line-height:1}
+.logo-svg{width:44px;height:38px;color:var(--ambar2);flex:none;filter:drop-shadow(0 2px 8px rgba(0,0,0,.5))}
+.wordmark b{font-size:25px;letter-spacing:2.5px}
+.wordmark small{font-size:9.5px;letter-spacing:2.2px;margin-top:6px}
+.lema{font-family:var(--script-f);font-style:normal;font-size:19px;color:var(--ambar2);margin-top:4px;letter-spacing:0;text-transform:none}
+.wordmark.centrado{flex-direction:column;text-align:center;gap:6px}
+.wordmark.centrado > div{align-items:center}
+.wordmark.centrado .logo-svg{width:64px;height:56px}
+.wordmark.centrado b{font-size:30px}
+
+/* temperatura: recuadro como en el boceto */
+.clima{display:inline-flex;flex-direction:column;align-items:flex-start;gap:6px;border-radius:20px;padding:14px 18px 12px;margin-bottom:16px;max-width:300px}
+.clima-fila{display:flex;align-items:center;gap:12px}
+.clima .clima-ico{width:46px;height:46px;color:#ffc24a;stroke-width:1.5;animation:flota 3s ease-in-out infinite}
+[data-clima=frio] .clima .clima-ico{color:#a9d8ff}
+.clima-fila > div{display:flex;flex-direction:column;line-height:1}
+.clima .clima-temp{font-size:44px}
+.clima-ciudad{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--crema);margin-top:4px}
+.clima-msg{font-size:15.5px;font-weight:600;color:var(--crema);line-height:1.3}
+.clima small{font-size:11px;color:var(--tenue)}
+
+/* tarjeta de conexión: cabecera WiFi + beneficios */
+.wifi-cab{display:flex;align-items:center;justify-content:center;gap:14px;text-align:left;margin-bottom:14px}
+.wifi-ico{width:52px;height:52px;color:var(--ambar);stroke-width:1.8}
+.wifi-cab h1.marca{font-size:30px;line-height:1.05}
+.wifi-cab .sub{margin:4px 0 0;font-size:14px}
+.beneficios{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 16px;padding:12px 6px;border-radius:16px;background:rgba(0,0,0,.2);border:1px solid var(--borde)}
+.beneficios li{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;line-height:1.25;color:var(--texto);text-align:center}
+.beneficios .ico{width:24px;height:24px;color:var(--ambar2)}
+
+/* oferta horizontal: texto a la izquierda, foto del producto a la derecha */
+.oferta{padding:0;gap:0;overflow:hidden;align-items:stretch}
+.oferta-txt{flex:1;min-width:0;padding:14px 12px 14px 16px;display:flex;flex-direction:column;gap:3px}
+.oferta img{width:132px;height:auto;min-height:132px;border-radius:0;object-fit:cover}
+.oferta b{font-size:22px}
+.oferta small{-webkit-line-clamp:2}
+.oferta-pie{flex-wrap:wrap;margin-top:8px}
+.oferta-cta{display:inline-flex;align-items:center;gap:6px;color:var(--ambar2);font-weight:600;font-size:13px}
+
+/* «¡Conectado!» */
+.icono-check{width:78px;height:78px;margin:0 auto 12px;border-radius:50%;border:2.5px solid var(--ambar);display:grid;place-items:center;color:var(--ambar);animation:pop .5s .2s both}
+.icono-check .ico{width:40px;height:40px;stroke-width:2.2}
+.pagina-listo > .portada-top{justify-content:space-between;align-items:flex-start}
+.acceso{justify-content:flex-start;gap:12px}
+.acceso .ico{width:26px;height:26px;color:var(--ambar2)}
+.promo-flecha .ico{width:20px;height:20px}
+.explora-mas{display:inline-flex;align-items:center;gap:5px}
+.gracias{display:flex;flex-direction:column;align-items:center;gap:8px;font-family:var(--serif-f)}
+.gracias .ico{width:34px;height:34px;color:var(--ambar2)}
+.gracias p{font-size:19px;color:var(--ambar2);max-width:300px}
+.badge.t{display:inline-flex;align-items:center;gap:4px}
+.badge.t .ico{width:12px;height:12px}
+
+/* pilares de la fachada + greca escalonada */
+.pilares{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 auto 18px;max-width:560px}
+.pilares li{display:flex;flex-direction:column;align-items:center;gap:7px;font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--texto);line-height:1.3}
+.pilares .ico{width:28px;height:28px;color:var(--ambar2)}
+.franja-andina{height:22px;margin-top:22px;opacity:.55;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='22' viewBox='0 0 48 22'%3E%3Cpath d='M0 19h6v-5h6V9h6V4h12v5h6v5h6v5h6' fill='none' stroke='%23e8a33d' stroke-width='2.2'/%3E%3Cpath d='M21 13h6v3h-6z' fill='%23e8a33d'/%3E%3C/svg%3E") repeat-x left bottom}
+
+@media (max-width:899px){
+  .wordmark b{font-size:21px}
+  .logo-svg{width:36px;height:31px}
+  .lema{font-size:17px}
+  .clima{padding:10px 14px 9px;margin-bottom:12px;gap:4px}
+  .clima .clima-ico{width:36px;height:36px}
+  .clima .clima-temp{font-size:34px}
+  .clima-msg{font-size:14px}
+  .wifi-cab h1.marca{font-size:26px}
+  .wifi-ico{width:42px;height:42px}
+  .oferta img{width:112px;min-height:120px}
+  .oferta b{font-size:19px}
+}

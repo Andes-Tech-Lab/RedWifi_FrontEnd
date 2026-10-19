@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { media } from "@/lib/api";
-import type { Producto, Temperatura } from "@/lib/tipos";
+import type { EstadoCatalogo, Producto, Temperatura } from "@/lib/tipos";
 import { mensaje, type Api } from "./comun";
 
 type Categoria = { id: number; nombre: string; emoji: string; orden: number };
@@ -9,8 +9,9 @@ type Borrador = Omit<Producto, "id" | "foto"> & { id?: number; foto?: string | n
 
 const VACIO: Borrador = {
   categoria_id: 0, nombre: "", descripcion: "", precio: 0, emoji: "", propio: false,
-  temperatura: "ambas", destacado: false, activo: true, orden: 0,
+  temperatura: "ambas", destacado: false, activo: true, orden: 0, disponible: true, origen: "local",
 };
+const fecha = (iso?: string) => (iso ? iso.replace("T", " ").slice(0, 16) : "—");
 const TEMP_TXT: Record<Temperatura, string> = { caliente: "🔥 caliente", fria: "🧊 fría", ambas: "—" };
 
 export default function TabCarta({ api }: { api: Api }) {
@@ -18,12 +19,19 @@ export default function TabCarta({ api }: { api: Api }) {
   const [prods, setProds] = useState<Producto[]>([]);
   const [edit, setEdit] = useState<Borrador | null>(null);
   const [nuevaCat, setNuevaCat] = useState({ nombre: "", emoji: "" });
+  const [catalogo, setCatalogo] = useState<EstadoCatalogo>({ configurado: false });
+  const [sincronizando, setSincronizando] = useState(false);
   const [error, setError] = useState("");
 
   const cargar = useCallback(async () => {
-    const [c, p] = await Promise.all([api<Categoria[]>("/categorias"), api<Producto[]>("/productos")]);
+    const [c, p, e] = await Promise.all([
+      api<Categoria[]>("/categorias"),
+      api<Producto[]>("/productos"),
+      api<EstadoCatalogo>("/catalogo"),
+    ]);
     setCats(c);
     setProds(p);
+    setCatalogo(e);
   }, [api]);
   useEffect(() => {
     cargar().catch((e) => setError(mensaje(e)));
@@ -58,9 +66,40 @@ export default function TabCarta({ api }: { api: Api }) {
     });
   }
 
+  async function sincronizar() {
+    setSincronizando(true);
+    await accion(() => api("/catalogo/sincronizar", { method: "POST", timeoutMs: 120000 }));
+    setSincronizando(false);
+  }
+
+  const pos = catalogo.configurado;
+  const delPos = edit?.origen === "pos";
+
   return (
     <div>
       {error && <div className="error">{error}</div>}
+
+      {pos && (
+        <div className="panel-admin aviso-pos">
+          <div>
+            <h2>📦 Carta sincronizada con admintienda</h2>
+            <p className="ayuda">
+              Productos, precios, fotos y disponibilidad se editan en admintienda y llegan solos cada pocos minutos.
+              Aquí solo se ajusta lo de marketing: frío/caliente, destacado, propio y orden.
+            </p>
+            <p className="ayuda">
+              {catalogo.ok === false ? (
+                <>⚠️ Último intento falló ({fecha(catalogo.fecha_error)}): {catalogo.error}. Se muestra la última copia.</>
+              ) : (
+                <>Última sincronización: {fecha(catalogo.fecha)} · {catalogo.productos ?? 0} productos activos</>
+              )}
+            </p>
+          </div>
+          <button className="btn btn-go btn-chico" disabled={sincronizando} onClick={sincronizar}>
+            {sincronizando ? "Sincronizando…" : "Sincronizar ahora"}
+          </button>
+        </div>
+      )}
 
       <div className="panel-admin">
         <h2>Categorías</h2>
@@ -93,9 +132,11 @@ export default function TabCarta({ api }: { api: Api }) {
       <div className="panel-admin">
         <div className="form-linea" style={{ justifyContent: "space-between" }}>
           <h2>Productos ({prods.length})</h2>
-          <button className="btn btn-go btn-chico" disabled={!cats.length} onClick={() => setEdit({ ...VACIO, categoria_id: cats[0]?.id ?? 0 })}>
-            + Nuevo producto
-          </button>
+          {!pos && (
+            <button className="btn btn-go btn-chico" disabled={!cats.length} onClick={() => setEdit({ ...VACIO, categoria_id: cats[0]?.id ?? 0 })}>
+              + Nuevo producto
+            </button>
+          )}
         </div>
         {cats.map((c) => {
           const lista = prods.filter((p) => p.categoria_id === c.id);
@@ -116,16 +157,19 @@ export default function TabCarta({ api }: { api: Api }) {
                           <div className="etiquetas">
                             {p.propio && <span className="et propio">Propio</span>}
                             {p.destacado && <span className="et">⭐ Destacado</span>}
-                            {!p.activo && <span className="et">Oculto</span>}
+                            {!p.activo && <span className="et">{p.origen === "pos" ? "Archivado en el POS" : "Oculto"}</span>}
+                            {p.activo && !p.disponible && <span className="et">Agotado</span>}
                             <span className="et">{TEMP_TXT[p.temperatura]}</span>
                           </div>
                         </td>
                         <td className="num">S/ {p.precio.toFixed(2)}</td>
                         <td className="acciones">
                           <button className="btn btn-sec btn-chico" onClick={() => setEdit({ ...p })}>Editar</button>
-                          <button className="btn btn-sec btn-chico" onClick={() => confirm(`¿Borrar "${p.nombre}"?`) && accion(() => api(`/productos/${p.id}`, { method: "DELETE" }))}>
-                            Borrar
-                          </button>
+                          {p.origen !== "pos" && (
+                            <button className="btn btn-sec btn-chico" onClick={() => confirm(`¿Borrar "${p.nombre}"?`) && accion(() => api(`/productos/${p.id}`, { method: "DELETE" }))}>
+                              Borrar
+                            </button>
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -141,26 +185,44 @@ export default function TabCarta({ api }: { api: Api }) {
         <div className="modal" onClick={(e) => e.target === e.currentTarget && setEdit(null)}>
           <div className="modal-caja">
             <h2>{edit.id ? "Editar producto" : "Nuevo producto"}</h2>
+            {delPos && (
+              <div className="solo-lectura form-linea">
+                {edit.foto && <img className="mini grande" src={media(edit.foto)!} alt="" />}
+                <div>
+                  <b>{edit.nombre}</b> · S/ {edit.precio.toFixed(2)} · {cats.find((c) => c.id === edit.categoria_id)?.nombre}
+                  {!edit.disponible && " · Agotado"}
+                  <p className="ayuda">Nombre, precio, foto, categoría y disponibilidad se cambian en admintienda.</p>
+                </div>
+              </div>
+            )}
+            {!delPos && (
             <label className="lbl">Categoría
               <select className="inp" value={edit.categoria_id} onChange={(e) => setEdit({ ...edit, categoria_id: +e.target.value })}>
                 {cats.map((c) => <option key={c.id} value={c.id}>{c.emoji} {c.nombre}</option>)}
               </select>
             </label>
+            )}
             <div className="form-linea">
               <label className="lbl" style={{ width: 80 }}>Emoji
                 <input className="inp" value={edit.emoji} onChange={(e) => setEdit({ ...edit, emoji: e.target.value })} />
               </label>
-              <label className="lbl" style={{ flex: 1 }}>Nombre
-                <input className="inp" value={edit.nombre} onChange={(e) => setEdit({ ...edit, nombre: e.target.value })} />
-              </label>
+              {!delPos && (
+                <label className="lbl" style={{ flex: 1 }}>Nombre
+                  <input className="inp" value={edit.nombre} onChange={(e) => setEdit({ ...edit, nombre: e.target.value })} />
+                </label>
+              )}
             </div>
-            <label className="lbl">Descripción
-              <textarea className="inp" rows={2} value={edit.descripcion} onChange={(e) => setEdit({ ...edit, descripcion: e.target.value })} />
-            </label>
-            <div className="form-linea">
-              <label className="lbl" style={{ flex: 1 }}>Precio (S/)
-                <input className="inp" type="number" step="0.5" min="0" value={edit.precio} onChange={(e) => setEdit({ ...edit, precio: +e.target.value })} />
+            {!delPos && (
+              <label className="lbl">Descripción
+                <textarea className="inp" rows={2} value={edit.descripcion} onChange={(e) => setEdit({ ...edit, descripcion: e.target.value })} />
               </label>
+            )}
+            <div className="form-linea">
+              {!delPos && (
+                <label className="lbl" style={{ flex: 1 }}>Precio (S/)
+                  <input className="inp" type="number" step="0.5" min="0" value={edit.precio} onChange={(e) => setEdit({ ...edit, precio: +e.target.value })} />
+                </label>
+              )}
               <label className="lbl" style={{ flex: 1 }}>Temperatura (promo por clima)
                 <select className="inp" value={edit.temperatura} onChange={(e) => setEdit({ ...edit, temperatura: e.target.value as Temperatura })}>
                   <option value="caliente">🔥 Caliente (días fríos)</option>
@@ -175,9 +237,12 @@ export default function TabCarta({ api }: { api: Api }) {
             <div className="checks">
               <label><input type="checkbox" checked={edit.propio} onChange={(e) => setEdit({ ...edit, propio: e.target.checked })} /> Elaboración propia (insignia &quot;Propio&quot;)</label>
               <label><input type="checkbox" checked={edit.destacado} onChange={(e) => setEdit({ ...edit, destacado: e.target.checked })} /> Destacado (sale primero en la promo)</label>
-              <label><input type="checkbox" checked={edit.activo} onChange={(e) => setEdit({ ...edit, activo: e.target.checked })} /> Visible en la carta</label>
+              {!delPos && (
+                <label><input type="checkbox" checked={edit.activo} onChange={(e) => setEdit({ ...edit, activo: e.target.checked })} /> Visible en la carta</label>
+              )}
             </div>
 
+            {!delPos && (
             <div className="lbl">Foto
               {edit.id ? (
                 <div className="form-linea">
@@ -193,6 +258,7 @@ export default function TabCarta({ api }: { api: Api }) {
                 <p className="ayuda">Guarda el producto primero para poder subir la foto.</p>
               )}
             </div>
+            )}
 
             <div className="form-linea" style={{ justifyContent: "flex-end", marginTop: 12 }}>
               <button className="btn btn-sec btn-chico" onClick={() => setEdit(null)}>Cerrar</button>

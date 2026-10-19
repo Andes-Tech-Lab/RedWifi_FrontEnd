@@ -4,7 +4,9 @@ import { pedir } from "@/lib/api";
 import { CLAVE_TOKEN, crearApi, mensaje } from "./comun";
 import TabCarta from "./TabCarta";
 import TabClientes from "./TabClientes";
+import TabContenidos from "./TabContenidos";
 import TabFlyers from "./TabFlyers";
+import TabMetricas from "./TabMetricas";
 import TabPromos from "./TabPromos";
 import TabTextos from "./TabTextos";
 
@@ -12,7 +14,9 @@ const TABS = [
   { id: "carta", txt: "🍫 Carta" },
   { id: "flyers", txt: "🖼️ Flyers" },
   { id: "promos", txt: "🌡️ Promo del día" },
+  { id: "contenidos", txt: "🧭 Contenidos" },
   { id: "textos", txt: "📝 Textos" },
+  { id: "metricas", txt: "📊 Métricas" },
   { id: "clientes", txt: "👥 Clientes" },
   { id: "pronto", txt: "🔌 Conectados · Tickets · Reportes" },
 ] as const;
@@ -88,7 +92,9 @@ export default function AdminApp() {
       {tab === "carta" && <TabCarta api={api} />}
       {tab === "flyers" && <TabFlyers api={api} />}
       {tab === "promos" && <TabPromos api={api} />}
+      {tab === "contenidos" && <TabContenidos api={api} />}
       {tab === "textos" && <TabTextos api={api} />}
+      {tab === "metricas" && <TabMetricas api={api} />}
       {tab === "clientes" && <TabClientes api={api} />}
       {tab === "pronto" && (
         <div className="panel-admin">
