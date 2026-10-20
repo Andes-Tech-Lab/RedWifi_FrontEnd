@@ -41,5 +41,15 @@ export function ordenarPorMomento<T>(lista: T[], temp: (x: T) => string, m: Mome
     .map(([x]) => x);
 }
 
+/**
+ * Foto vertical (2:3, ~900×1350) de la portada en el celular: una fija por momento, sin rotar.
+ * Para cambiarla, reemplaza el archivo en public/img/ con el mismo nombre.
+ */
+const FOTO_MOVIL: Record<Momento, string> = {
+  calor: "/img/movil-calor.jpg", frio: "/img/movil-frio.jpg", noche: "/img/movil-frio.jpg",
+  manana: "/img/movil-cafe.jpg", almuerzo: "/img/movil-cafe.jpg", cafe: "/img/movil-cafe.jpg",
+};
+export const fotoMovil = (m: Momento) => FOTO_MOVIL[m];
+
 /** Foto de respaldo para la promo cuando el producto no tiene foto. */
 export const fotoDelMomento = (m: Momento) => (PREFIERE[m] === "fria" ? "/img/hero-frappe-cafe.jpg" : "/img/hero-chocolate.jpg");

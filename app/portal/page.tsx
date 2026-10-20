@@ -4,7 +4,7 @@ import Conexion from "@/components/Conexion";
 import Portada from "@/components/Portada";
 import { Carta, Pie } from "@/components/Secciones";
 import { esDemo, qs, useQuery } from "@/lib/hotspot";
-import { IdiomaProvider, momentoDelDia } from "@/lib/idioma";
+import { IdiomaProvider, useMomentoDelDia } from "@/lib/idioma";
 import { registrar } from "@/lib/metricas";
 import { useLanding } from "@/lib/useLanding";
 
@@ -20,7 +20,8 @@ export default function Landing() {
   }, [agotado, hotspot]);
 
   // Misma regla que la API y el login del MikroTik: clima extremo primero, si no la hora.
-  const momento = datos?.promo.momento ?? momentoDelDia();
+  const horaLocal = useMomentoDelDia();
+  const momento = datos?.promo.momento ?? horaLocal;
 
   // Antes de conectarse, una sola pantalla: foto, promo del momento y el botón. La carta queda abajo
   // para quien quiera; lo demás (redes, historia, suscripción) va en /listo, ya con internet.

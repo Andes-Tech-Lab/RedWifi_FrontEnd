@@ -138,7 +138,10 @@ export default function Conexion({ hotspot, nombre, minutos, momento }: Props) {
       </div>
 
       <button className="btn btn-go" type="button" disabled={cargando} onClick={conectar}>
-        {m.cta} <Icono n="flecha" />
+        <span className="cta-txt">
+          {m.cta} <Icono n="flecha" />
+        </span>
+        <small className="cta-sub">{t.ctaSub(minutos)}</small>
       </button>
       <p className="legal">
         {t.alConectar} <Link href="/terminos/">{t.terminos}</Link>.

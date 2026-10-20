@@ -5,7 +5,7 @@ import { Icono, Wordmark } from "@/components/Marca";
 import { Carta, Nosotros, Pie } from "@/components/Secciones";
 import { media, pedir } from "@/lib/api";
 import { useQuery } from "@/lib/hotspot";
-import { BanderaPE, IdiomaProvider, SelectorIdioma, momentoDelDia, useIdioma } from "@/lib/idioma";
+import { BanderaPE, IdiomaProvider, SelectorIdioma, useIdioma, useMomentoDelDia } from "@/lib/idioma";
 import { registrar } from "@/lib/metricas";
 import type { Contenido, Landing, Seccion } from "@/lib/tipos";
 import { useLanding } from "@/lib/useLanding";
@@ -162,10 +162,11 @@ function Conectado() {
 /** Una sola oferta: la promo manual del día o el primer producto con foto de la promo automática. */
 function PromoDestacada({ datos }: { datos: Landing }) {
   const { t } = useIdioma();
+  const horaLocal = useMomentoDelDia(); // no leer la hora en el render: rompe la hidratación (#418)
   const { promo, clima } = datos;
   const p = promo.productos.find((x) => x.foto) ?? promo.productos[0];
   if (!p && promo.tipo !== "manual") return null;
-  const momento = promo.momento ?? momentoDelDia();
+  const momento = promo.momento ?? horaLocal;
   const auto = promo.tipo !== "manual" ? t.momentos[momento] : null;
   const titulo = promo.tipo === "manual" ? promo.titulo : p?.nombre ?? auto?.tit(clima?.temp);
   const texto = promo.tipo === "manual" ? promo.texto : p?.descripcion || auto?.txt;

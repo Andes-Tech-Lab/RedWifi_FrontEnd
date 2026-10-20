@@ -538,3 +538,64 @@ select.inp option{background:#2a1810}
   .oferta img{width:112px;min-height:120px}
   .oferta b{font-size:19px}
 }
+
+/* ================= celular: composición propia (el escritorio no cambia) ================= */
+.movil-hero{display:none}
+.cta-txt{display:inline-flex;align-items:center;gap:10px}
+.cta-sub{display:none}
+
+@media (max-width:899px){
+  .portada{min-height:0;overflow:visible}
+  .portada > .slides,.portada-promo,.portada-layout > .oferta{display:none}
+
+  /* foto vertical del producto, nítida: el degradado solo protege los textos de arriba y abajo */
+  .movil-hero{display:flex;flex-direction:column;position:relative;height:clamp(330px,58svh,540px);
+    padding:14px 16px 44px;background-color:var(--cafe);background-size:cover;background-position:center 40%}
+  .movil-hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(180deg,rgba(20,10,5,.62) 0%,rgba(20,10,5,0) 24%,rgba(20,10,5,0) 46%,rgba(20,10,5,.9) 100%)}
+  .movil-hero > *{position:relative}
+  .movil-hero .portada-top{align-items:flex-start}
+
+  .clima-chip{align-self:flex-start;display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:5px 12px 5px 8px;border-radius:999px;
+    background:rgba(20,10,5,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,220,170,.22);color:var(--crema);font-size:12px}
+  .clima-chip .ico{width:22px;height:22px;color:#ffc24a}
+  [data-clima=frio] .clima-chip .ico{color:#a9d8ff}
+  .clima-chip b{font-size:18px;font-weight:800}
+  .clima-chip span{color:var(--tenue)}
+
+  .movil-titular{margin-top:auto}
+  .movil-titular h2{font-family:var(--serif-f);font-weight:400;font-size:clamp(27px,8vw,35px);line-height:1.08;color:#fff;text-shadow:0 3px 18px rgba(0,0,0,.6)}
+  .movil-titular em{display:block;font-family:var(--script-f);font-style:normal;font-weight:600;font-size:1.18em;line-height:1.05;color:var(--ambar2)}
+  .movil-oferta{display:inline-flex;align-items:center;gap:8px;max-width:100%;margin-top:12px;padding:5px 5px 5px 12px;border-radius:999px;text-decoration:none;
+    background:rgba(20,10,5,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,207,122,.32);color:var(--crema);font-size:13px}
+  .movil-oferta span{flex:none;font-size:9.5px;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:var(--ambar2)}
+  .movil-oferta b{min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .movil-oferta i{flex:none;font-style:normal;font-weight:800;color:var(--espresso);background:var(--ambar2);padding:3px 10px;border-radius:999px}
+
+  /* hoja de conexión: sin cajas ni bordes extra, el botón manda */
+  .portada-layout{display:block;padding:0}
+  .portada .card{max-width:none;margin-top:-26px;padding:30px 18px 16px;border:0;border-radius:26px 26px 0 0;background:#1f120c;
+    backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 -14px 32px rgba(0,0,0,.4);animation:none}
+  .portada .card::before{content:"";position:absolute;left:22px;right:22px;top:9px;height:12px;opacity:.32;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='22' viewBox='0 0 48 22'%3E%3Cpath d='M0 19h6v-5h6V9h6V4h12v5h6v5h6v5h6' fill='none' stroke='%23e8a33d' stroke-width='2.2'/%3E%3Cpath d='M21 13h6v3h-6z' fill='%23e8a33d'/%3E%3C/svg%3E") repeat-x left center/auto 12px}
+  .portada .wifi-cab,.portada .beneficios{display:none}
+  .portada .wa-opt{border:0;background:none;padding:0;margin:0 0 14px}
+  .portada .check.wa{margin:0}
+  .portada .check.wa .wa-ico{width:26px;height:26px}
+  .portada .check.wa b{font-size:13.5px}
+  .portada .wa-opt.on .wa-campo{margin-top:10px}
+  .portada .btn-go{flex-direction:column;gap:2px;padding:14px 18px;border-radius:18px}
+  .cta-txt{font-size:17px}
+  .cta-sub{display:block;font-size:12px;font-weight:600;opacity:.75}
+  .portada .legal{margin-top:10px}
+  .portada .link{margin-top:6px}
+  .portada .pie-card{margin-top:8px}
+}
+@media (max-width:899px){
+  .movil-hero .wordmark small{font-size:8.5px;letter-spacing:1.3px;white-space:nowrap}
+  .movil-oferta{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;row-gap:1px;align-items:center;border-radius:16px;padding:8px 8px 8px 14px}
+  .movil-oferta span{grid-column:1;grid-row:1}
+  .movil-oferta b{grid-column:1;grid-row:2;font-size:14px}
+  .movil-oferta i{grid-column:2;grid-row:1/3}
+  .portada + .pagina > .seccion:first-child{margin-top:28px}
+}

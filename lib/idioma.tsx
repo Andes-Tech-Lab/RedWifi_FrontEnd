@@ -83,6 +83,13 @@ const es = {
   sublema: "Café · Cacao · Experiencias",
   pilares: ["Café de origen", "Chocolate bean to bar", "Gastronomía local", "Experiencias turísticas"],
   wifiGratis: "WiFi gratis",
+  ctaSub: (n: number) => `WiFi gratis · ${n} min`,
+  // Titular corto del celular: Huamanga + lo que se antoja. La segunda parte va en manuscrita.
+  tituloMovil: {
+    calor: ["Calor en Huamanga,", "frappé bien helado"], frio: ["Frío en Huamanga,", "chocolate en tu taza"],
+    manana: ["Mañana en Huamanga,", "café recién hecho"], almuerzo: ["Mediodía en Huamanga,", "una pausa rica"],
+    cafe: ["Tarde en Huamanga,", "café y algo dulce"], noche: ["Noche en Huamanga,", "chocolate calientito"],
+  } as Record<Momento, [string, string]>,
   beneficios: (n: number) => [`${n} minutos de navegación`, "Ideal para trabajar o compartir", "Conexión rápida"],
   climaMsg: {
     calor: "¡Día perfecto para algo bien helado!", frio: "¡Día perfecto para un chocolate caliente!",
@@ -198,6 +205,12 @@ const en: typeof es = {
   sublema: "Coffee · Cacao · Experiences",
   pilares: ["Single-origin coffee", "Bean-to-bar chocolate", "Local food", "Travel experiences"],
   wifiGratis: "Free WiFi",
+  ctaSub: (n) => `Free WiFi · ${n} min`,
+  tituloMovil: {
+    calor: ["Hot in Huamanga,", "ice-cold frappé"], frio: ["Cold in Huamanga,", "chocolate in your cup"],
+    manana: ["Morning in Huamanga,", "fresh-brewed coffee"], almuerzo: ["Midday in Huamanga,", "a tasty break"],
+    cafe: ["Afternoon in Huamanga,", "coffee & something sweet"], noche: ["Night in Huamanga,", "warm hot chocolate"],
+  },
   beneficios: (n) => [`${n} minutes online`, "Great for work or hanging out", "Fast connection"],
   climaMsg: {
     calor: "Perfect day for something ice cold!", frio: "Perfect day for a hot chocolate!",
@@ -275,6 +288,16 @@ export const useIdioma = () => useContext(IdiomaCtx);
 export function momentoDelDia(): Momento {
   const h = new Date().getHours();
   return h < 11 ? "manana" : h < 15 ? "almuerzo" : h < 20 ? "cafe" : "noche";
+}
+
+/**
+ * momentoDelDia() para usar en el render. El HTML pre-generado lleva la hora del build (UTC en Vercel):
+ * leer la hora antes de montar rompe la hidratación (React #418). Primero "cafe", al montar la hora real.
+ */
+export function useMomentoDelDia(): Momento {
+  const [momento, setMomento] = useState<Momento>("cafe");
+  useEffect(() => setMomento(momentoDelDia()), []);
+  return momento;
 }
 
 // Banderas en SVG: Windows no dibuja los emojis de bandera (salen como "PE").

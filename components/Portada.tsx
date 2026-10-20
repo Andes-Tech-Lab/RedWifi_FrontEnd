@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { media } from "@/lib/api";
-import { SLIDES, ordenarPorMomento } from "@/lib/escaparate";
+import { SLIDES, fotoMovil, ordenarPorMomento } from "@/lib/escaparate";
 import { SelectorIdioma, useIdioma, type Momento } from "@/lib/idioma";
 import { registrar } from "@/lib/metricas";
 import type { Clima, Landing, Producto } from "@/lib/tipos";
@@ -34,8 +34,40 @@ export default function Portada({ datos, momento, children }: Props) {
   // Solo productos con foto real: un emoji no vende un producto.
   const oferta = datos?.promo.productos.find((p) => p.foto);
 
+  const nombre = datos?.negocio.nombre ?? "Chinkana";
+  const [tit1, tit2] = t.tituloMovil[momento];
+
   return (
     <div className="portada" data-clima={momento === "calor" || momento === "frio" ? momento : "templado"}>
+      {/* Celular: composición propia. Foto vertical fija del momento, marca, temperatura y titular sobre ella. */}
+      <header className="movil-hero" style={{ backgroundImage: `url(${fotoMovil(momento)})` }}>
+        <div className="portada-top">
+          <Wordmark nombre={nombre} lema />
+          <SelectorIdioma />
+        </div>
+        {datos?.clima && (
+          <div className="clima-chip">
+            <Icono n={iconoClima(datos.clima.descripcion, Number(datos.clima.actualizado.slice(11, 13)))} />
+            <b>{datos.clima.temp}°</b>
+            <span>
+              {datos.negocio.ciudad} · {datos.clima.actualizado.slice(11, 16)}
+            </span>
+          </div>
+        )}
+        <div className="movil-titular">
+          <h2>
+            {tit1} <em>{tit2}</em>
+          </h2>
+          {oferta && (
+            <a className="movil-oferta" href="#carta" onClick={() => registrar("promo_click", String(oferta.id))}>
+              <span>{t.recomendado}</span>
+              <b>{oferta.nombre}</b>
+              <i>{soles(oferta.precio)}</i>
+            </a>
+          )}
+        </div>
+      </header>
+
       <div className="slides" aria-hidden="true">
         {slides.map((s, i) => (
           <div key={s.img} className={`slide ${i === actual ? "on" : ""}`} style={{ backgroundImage: `url(${s.img})` }} />
@@ -45,7 +77,7 @@ export default function Portada({ datos, momento, children }: Props) {
       <div className="portada-layout">
         <section className="portada-promo">
           <div className="portada-top">
-            <Wordmark nombre={datos?.negocio.nombre ?? "Chinkana"} lema />
+            <Wordmark nombre={nombre} lema />
             <SelectorIdioma />
           </div>
           <div>
