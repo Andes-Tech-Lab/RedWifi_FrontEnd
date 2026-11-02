@@ -4,7 +4,7 @@
  */
 import { API } from "./api";
 
-export type TipoEvento = "portal_visita" | "conexion_intento" | "conexion" | "promo_click" | "menu_visita" | "contenido_click";
+export type TipoEvento = "portal_visita" | "conexion_intento" | "conexion" | "promo_click" | "menu_visita" | "contenido_click" | "menu_dia_click";
 
 export function registrar(tipo: TipoEvento, ref = "") {
   try {

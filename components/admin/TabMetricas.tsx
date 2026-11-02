@@ -12,6 +12,7 @@ const FILAS: { tipo: string; txt: string; ayuda: string }[] = [
   { tipo: "promo_click", txt: "Clics en la promo", ayuda: "Oferta destacada del portal y de «¡Conectado!»" },
   { tipo: "menu_visita", txt: "Visitas a la carta", ayuda: "La carta llegó a verse en pantalla" },
   { tipo: "contenido_click", txt: "Clics en contenidos", ayuda: "Sabores, turismo, marcas y novedades" },
+  { tipo: "menu_dia_click", txt: "Clics en menú del día", ayuda: "Botones «menú por WhatsApp» y «pensión mensual» del carrusel" },
   { tipo: "wa_suscripcion", txt: "Suscripciones a WhatsApp", ayuda: "Con consentimiento registrado (portal o «¡Conectado!»)" },
 ];
 

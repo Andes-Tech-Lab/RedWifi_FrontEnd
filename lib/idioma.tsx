@@ -52,6 +52,12 @@ const es = {
     cafe: { tag: "Hora del café", tit: "Un buen café, algo dulce y un momento para ti", txt: "Café, postres y chocolate de la casa." },
     noche: { tag: "Buenas noches", tit: "Cierra el día con algo rico", txt: "Chocolate caliente y postres para terminar bien el día." },
   },
+  // diapositivas extra del carrusel (título y texto se pueden reemplazar en /admin → Textos)
+  menuDia: { tag: "Hoy en Chinkana", tit: "Prueba nuestro plato del día",
+    txt: "Comida casera, hecha aquí cada mañana. Déjanos tu WhatsApp y te enviamos el menú del día." },
+  menuDiaBtn: "Quiero el menú por WhatsApp",
+  pensionBtn: "Pensión mensual",
+  chapla: { tag: "Sánguches", tit: "Arma tu sánguche en pan chapla", txt: "El pan de Ayacucho, con lo que más te guste." },
   climaDesc: (d: string) => d,
   actualizado: (h: string) => `actualizado ${h}`,
   antojosTit: "Antójate mientras navegas",
@@ -172,6 +178,11 @@ const en: typeof es = {
     cafe: { tag: "Coffee time", tit: "Great coffee, something sweet and a moment for you", txt: "Coffee, desserts and house chocolate." },
     noche: { tag: "Good evening", tit: "End your day with a treat", txt: "Hot chocolate and desserts to wrap up the day." },
   },
+  menuDia: { tag: "Today at Chinkana", tit: "Try our dish of the day",
+    txt: "Home-style food, made here every morning. Leave your WhatsApp and we'll send you the daily menu." },
+  menuDiaBtn: "Send me the menu on WhatsApp",
+  pensionBtn: "Monthly meal plan",
+  chapla: { tag: "Sandwiches", tit: "Build your sandwich on chapla bread", txt: "Ayacucho's own bread, filled your way." },
   // La API manda la descripción del clima en español
   climaDesc: (d) =>
     ({ Despejado: "Clear", "Parcialmente nublado": "Partly cloudy", Neblina: "Fog", Lluvia: "Rain", Nieve: "Snow",

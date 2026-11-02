@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { pedir } from "@/lib/api";
 import { esDemo, qs, urlCodigo, urlTrial, type Hotspot } from "@/lib/hotspot";
 import { BanderaPE, useIdioma, type Momento } from "@/lib/idioma";
@@ -9,6 +9,15 @@ import { registrar } from "@/lib/metricas";
 import { Icono } from "./Marca";
 
 type Props = { hotspot: Hotspot; nombre: string; minutos: number; momento: Momento };
+type Motivo = "menu_dia" | "pension";
+
+const EVENTO_WA = "chk-pedir-wa";
+
+/** Botones del carrusel: antes de conectarse no hay internet para abrir WhatsApp, así que marcan la casilla de promos. */
+export function pedirWhatsapp(motivo: Motivo) {
+  registrar("menu_dia_click", motivo);
+  window.dispatchEvent(new CustomEvent<Motivo>(EVENTO_WA, { detail: motivo }));
+}
 
 /**
  * El mismo cuadro de conexión del portal del MikroTik: un toque → trial.
@@ -23,7 +32,19 @@ export default function Conexion({ hotspot, nombre, minutos, momento }: Props) {
   const [error, setError] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [aviso, setAviso] = useState("");
+  const [origen, setOrigen] = useState<"portal" | Motivo>("portal");
   const telRef = useRef<HTMLInputElement>(null);
+  const cardRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    function alPedir(e: Event) {
+      setOrigen((e as CustomEvent<Motivo>).detail);
+      marcar(true);
+      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    window.addEventListener(EVENTO_WA, alPedir);
+    return () => window.removeEventListener(EVENTO_WA, alPedir);
+  }, []);
 
   const digitos = tel.replace(/\D/g, "");
   const valido = /^9\d{8}$/.test(digitos);
@@ -55,7 +76,7 @@ export default function Conexion({ hotspot, nombre, minutos, momento }: Props) {
         await pedir("/api/portal/registro", {
           method: "POST",
           timeoutMs: 3000,
-          json: { telefono: digitos, acepta_promos: true, mac: hotspot.mac || null, origen: "portal" },
+          json: { telefono: digitos, acepta_promos: true, mac: hotspot.mac || null, origen },
         });
       } catch {}
     }
@@ -79,7 +100,7 @@ export default function Conexion({ hotspot, nombre, minutos, momento }: Props) {
   }
 
   return (
-    <main className="card">
+    <main ref={cardRef} className="card">
       <div className="wifi-cab">
         <Icono n="wifi" className="wifi-ico" />
         <div>

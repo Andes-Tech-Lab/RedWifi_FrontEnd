@@ -58,4 +58,6 @@ export type Landing = {
   carta: { id: number; nombre: string; emoji: string; productos: Producto[] }[];
   nosotros: { nosotros_historia: string; nosotros_objetivo: string; direccion: string; horario: string };
   enlaces: { wa_canal: string; instagram: string; facebook: string; tiktok: string; resena_url: string };
+  // Diapositivas extra del carrusel (null = apagada en /admin). Textos vacíos = los de idioma.tsx.
+  carrusel: Record<"menu_dia" | "chapla", { titulo: string; texto: string } | null>;
 };

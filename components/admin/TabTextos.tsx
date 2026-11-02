@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { mensaje, type Api } from "./comun";
 
-const GRUPOS: { titulo: string; campos: { clave: string; etiqueta: string; largo?: boolean }[] }[] = [
+const GRUPOS: { titulo: string; campos: { clave: string; etiqueta: string; largo?: boolean; siNo?: boolean }[] }[] = [
   { titulo: "Marca", campos: [
     { clave: "nombre", etiqueta: "Nombre del local" },
     { clave: "eslogan", etiqueta: "Eslogan" },
@@ -19,6 +19,16 @@ const GRUPOS: { titulo: string; campos: { clave: string; etiqueta: string; largo
     { clave: "nosotros_objetivo", etiqueta: "Objetivo", largo: true },
     { clave: "direccion", etiqueta: "Dirección" },
     { clave: "horario", etiqueta: "Horario" },
+  ] },
+  { titulo: "Carrusel: menú del día (vacío = texto por defecto, en español e inglés)", campos: [
+    { clave: "menu_dia_activo", etiqueta: "Mostrar en el carrusel", siNo: true },
+    { clave: "menu_dia_titulo", etiqueta: "Título (p. ej. «Hoy: ají de gallina»)" },
+    { clave: "menu_dia_texto", etiqueta: "Texto", largo: true },
+  ] },
+  { titulo: "Carrusel: sánguche de chapla (vacío = texto por defecto)", campos: [
+    { clave: "chapla_activo", etiqueta: "Mostrar en el carrusel", siNo: true },
+    { clave: "chapla_titulo", etiqueta: "Eslogan" },
+    { clave: "chapla_texto", etiqueta: "Texto", largo: true },
   ] },
   { titulo: "Enlaces (vacío = no se muestra)", campos: [
     { clave: "wa_canal", etiqueta: "Canal de WhatsApp" },
@@ -59,7 +69,12 @@ export default function TabTextos({ api }: { api: Api }) {
       {GRUPOS.map((g) => (
         <div key={g.titulo} className="panel-admin">
           <h2>{g.titulo}</h2>
-          {g.campos.map((c) => (
+          {g.campos.map((c) => c.siNo ? (
+            <label key={c.clave} className="check">
+              <input type="checkbox" checked={datos[c.clave] === "1"} onChange={(e) => setDatos({ ...datos, [c.clave]: e.target.checked ? "1" : "0" })} />
+              <span>{c.etiqueta}</span>
+            </label>
+          ) : (
             <label key={c.clave} className="lbl">
               {c.etiqueta}
               {c.largo ? (
